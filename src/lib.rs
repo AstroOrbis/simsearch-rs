@@ -111,8 +111,8 @@ where
     /// with a supporting cast including Amy Sedaris,
     /// Alison Brie, Paul F. Tompkins, and Aaron Paul.");
     /// ```
-    pub fn insert(&mut self, id: Id, content: &str) {
-        self.insert_tokens(id, &[content])
+    pub fn insert(&mut self, id: Id, content: impl Searchable) {
+        self.insert_tokens(id, &[content.get_search_string()])
     }
 
     /// Inserts entry tokens into search engine.
@@ -443,5 +443,22 @@ where
 impl Default for SearchOptions {
     fn default() -> Self {
         SearchOptions::new()
+    }
+}
+
+
+pub trait Searchable {
+    fn get_search_string(&self) -> &str;
+}
+
+impl Searchable for String {
+    fn get_search_string(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl Searchable for &str {
+    fn get_search_string(&self) -> &str {
+        *self
     }
 }
